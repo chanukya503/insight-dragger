@@ -64,7 +64,7 @@ const Index = () => {
     console.log('New insights order:', reorderedInsights);
   };
 
-  const getInsightView = (insight: InsightDTO) => {
+  const getInsightView = (insight: InsightDTO, dragHandleProps?: any) => {
     // Different card sizes based on insight ID (for demonstration)
     const size = parseInt(insight.insightId) % 3 === 0 
       ? 'h-64' 
@@ -73,7 +73,7 @@ const Index = () => {
         : 'h-72';
 
     return (
-      <InsightCard insight={insight}>
+      <InsightCard insight={insight} dragHandleProps={dragHandleProps}>
         <div className={`${size} flex flex-col justify-between`}>
           <div>
             <h4 className="text-xl font-bold mb-2">Insight {insight.insightId}</h4>

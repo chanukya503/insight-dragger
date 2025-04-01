@@ -17,7 +17,7 @@ export interface InsightDTO {
 
 interface DraggableInsightsProps {
   insights: InsightDTO[];
-  renderInsight: (insight: InsightDTO) => React.ReactNode;
+  renderInsight: (insight: InsightDTO, dragHandleProps?: any) => React.ReactNode;
   onReorder?: (reorderedInsights: InsightDTO[]) => void;
 }
 
@@ -117,7 +117,7 @@ const DraggableInsights: React.FC<DraggableInsightsProps> = ({
                       snapshot.isDragging ? 'shadow-lg ring-2 ring-primary rounded-lg z-50 opacity-90' : ''
                     }`}
                   >
-                    {renderInsight(insight)}
+                    {renderInsight(insight, provided.dragHandleProps)}
                   </div>
                 )}
               </Draggable>
