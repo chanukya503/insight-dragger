@@ -17,7 +17,7 @@ export interface InsightDTO {
 
 interface DraggableInsightsProps {
   insights: InsightDTO[];
-  renderInsight: (insight: InsightDTO, dragHandleProps?: any) => React.ReactNode;
+  renderInsight: (insight: InsightDTO, dragHandleProps?: any, isVisible?: boolean, onToggleVisibility?: (insightId: string) => void) => React.ReactNode;
   onReorder?: (reorderedInsights: InsightDTO[]) => void;
 }
 
@@ -27,11 +27,34 @@ const DraggableInsights: React.FC<DraggableInsightsProps> = ({
   onReorder
 }) => {
   const [items, setItems] = useState<InsightDTO[]>([]);
+  const [hiddenInsights, setHiddenInsights] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     // Initialize the items when insights change
     setItems(insights);
   }, [insights]);
+
+  const handleToggleVisibility = (insightId: string) => {
+    setHiddenInsights(prev => {
+      const newHidden = new Set(prev);
+      if (newHidden.has(insightId)) {
+        newHidden.delete(insightId);
+        toast({
+          title: "Insight visible",
+          description: "The insight is now visible on your dashboard.",
+          duration: 2000,
+        });
+      } else {
+        newHidden.add(insightId);
+        toast({
+          title: "Insight hidden",
+          description: "The insight is now hidden from your dashboard view.",
+          duration: 2000,
+        });
+      }
+      return newHidden;
+    });
+  };
 
   const handleDragEnd = (result: DropResult) => {
     // Dropped outside the list
@@ -117,7 +140,12 @@ const DraggableInsights: React.FC<DraggableInsightsProps> = ({
                       snapshot.isDragging ? 'shadow-lg ring-2 ring-primary rounded-lg z-50 opacity-90' : ''
                     }`}
                   >
-                    {renderInsight(insight, provided.dragHandleProps)}
+                    {renderInsight(
+                      insight, 
+                      provided.dragHandleProps, 
+                      !hiddenInsights.has(insight.insightId),
+                      handleToggleVisibility
+                    )}
                   </div>
                 )}
               </Draggable>

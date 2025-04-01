@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import DraggableInsights, { InsightDTO } from '@/components/DraggableInsights';
 import InsightCard from '@/components/InsightCard';
@@ -11,9 +10,7 @@ const Index = () => {
   const [selectedVendorTabs, setSelectedVendorTabs] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data for demonstration
   useEffect(() => {
-    // Simulating data fetching
     setTimeout(() => {
       const mockInsights: InsightDTO[] = [
         {
@@ -59,13 +56,15 @@ const Index = () => {
 
   const handleReorderInsights = (reorderedInsights: InsightDTO[]) => {
     setInsights(reorderedInsights);
-    
-    // Here you would typically send the updated order to your backend
     console.log('New insights order:', reorderedInsights);
   };
 
-  const getInsightView = (insight: InsightDTO, dragHandleProps?: any) => {
-    // Different card sizes based on insight ID (for demonstration)
+  const getInsightView = (
+    insight: InsightDTO, 
+    dragHandleProps?: any, 
+    isVisible?: boolean, 
+    onToggleVisibility?: (insightId: string) => void
+  ) => {
     const size = parseInt(insight.insightId) % 3 === 0 
       ? 'h-64' 
       : parseInt(insight.insightId) % 2 === 0 
@@ -73,7 +72,12 @@ const Index = () => {
         : 'h-72';
 
     return (
-      <InsightCard insight={insight} dragHandleProps={dragHandleProps}>
+      <InsightCard 
+        insight={insight} 
+        dragHandleProps={dragHandleProps}
+        isVisible={isVisible}
+        onToggleVisibility={onToggleVisibility}
+      >
         <div className={`${size} flex flex-col justify-between`}>
           <div>
             <h4 className="text-xl font-bold mb-2">Insight {insight.insightId}</h4>
@@ -120,7 +124,6 @@ const Index = () => {
   };
 
   const saveInsightPositions = () => {
-    // This would typically send the updated positions to your backend
     toast({
       title: "Changes saved",
       description: "Your insight positions have been saved successfully.",
@@ -133,7 +136,7 @@ const Index = () => {
         <header className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Insights Dashboard</h1>
           <p className="text-muted-foreground mb-6">
-            Drag and drop insights to reorder them. Cards can be different sizes.
+            Drag and drop insights to reorder them. Use the eye icon to show/hide insights.
           </p>
           
           <div className="flex justify-between items-center mb-4">
