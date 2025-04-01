@@ -82,9 +82,17 @@ const DraggableInsights: React.FC<DraggableInsightsProps> = ({
     }));
   };
 
+  // Function to get grid styles
+  const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: 'none',
+    // styles we need to apply on draggables
+    ...draggableStyle,
+  });
+
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="insights-droppable">
+      <Droppable droppableId="insights-droppable" type="INSIGHT">
         {(provided) => (
           <div
             {...provided.droppableProps}
@@ -92,18 +100,22 @@ const DraggableInsights: React.FC<DraggableInsightsProps> = ({
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4"
           >
             {items.map((insight, index) => (
-              <Draggable key={insight.insightId} draggableId={insight.insightId} index={index}>
+              <Draggable 
+                key={insight.insightId} 
+                draggableId={insight.insightId} 
+                index={index}
+              >
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className={`transition-shadow duration-200 ${
-                      snapshot.isDragging ? 'shadow-lg ring-2 ring-primary rounded-lg z-10' : ''
+                    style={getItemStyle(
+                      snapshot.isDragging,
+                      provided.draggableProps.style
+                    )}
+                    className={`transition-all duration-200 ${
+                      snapshot.isDragging ? 'shadow-lg ring-2 ring-primary rounded-lg z-50 opacity-90' : ''
                     }`}
-                    style={{
-                      ...provided.draggableProps.style,
-                    }}
                   >
                     {renderInsight(insight)}
                   </div>
